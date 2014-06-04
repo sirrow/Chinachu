@@ -9,3 +9,7 @@ before_script:
 
 notifications:
   email: false
+
+branches:
+  except:
+    - devel-usushio
