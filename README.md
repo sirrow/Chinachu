@@ -2,3 +2,7 @@ Chinachu [![Build Status](https://secure.travis-ci.org/kanreisa/Chinachu.png)](h
 ========
 
 Visit the Chinachu website for more information: <http://chinachu.akkar.in/>
+
+Introducing Chinachu Usushio
+----------------------------
+Work in progress. This does **NOT** worki yet.
