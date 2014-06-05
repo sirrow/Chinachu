@@ -1,0 +1,31 @@
+{
+  "/": {
+    "script" : "channels",
+    "methods": ["head", "get"],
+    "types"  : ["json"]
+  },
+
+  "/:chid": {
+    "script" : "channel",
+    "methods": ["get"],
+    "types"  : ["json"]
+  },
+
+  "/:chid/programs": {
+    "script" : "channel-programs",
+    "methods": ["get"],
+    "types"  : ["json"]
+  },
+
+  "/:chid/broadcasting-programs": {
+    "script" : "channel-broadcasting",
+    "methods": ["get"],
+    "types"  : ["json"]
+  },
+
+  "/:chid/watch": {
+    "script" : "channel-watch",
+    "methods": ["get"],
+    "types"  : ["txt", "m3u8", "xspf", "m2ts", "f4v", "flv", "webm", "asf"]
+  }
+}

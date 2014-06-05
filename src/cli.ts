@@ -1,9 +1,7 @@
-/*!
- *  Chinachu SubCLI (chinachu-cli)
- *
- *  Copyright (c) 2012 Yuki KAN and Chinachu Project Contributors
- *  http://chinachu.akkar.in/
-**/
+// # Chinachu CLI (chinachu-cli)
+
+/// <reference path="ref/node.d.ts"/>
+'use strict';
 
 var CONFIG_FILE         = __dirname + '/config.json';
 var RULES_FILE          = __dirname + '/rules.json';

@@ -1,0 +1,13 @@
+{
+  "/": {
+    "script" : "programs",
+    "methods": ["get"],
+    "types"  : ["json"]
+  },
+
+  "/:id": {
+    "script" : "program",
+    "methods": ["get"],
+    "types"  : ["json"]
+  }
+}

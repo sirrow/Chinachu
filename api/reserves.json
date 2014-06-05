@@ -1,18 +1,18 @@
 {
   "/": {
-    "script" : "rules",
-    "methods": ["get", "post"],
+    "script" : "reserves",
+    "methods": ["get"],
     "types"  : ["json"]
   },
   
-  "/:num": {
-    "script" : "rules-rule",
+  "/:id": {
+    "script" : "reserved-program",
     "methods": ["get", "put", "delete"],
     "types"  : ["json"]
   },
   
-  "/:num/:action": {
-    "script" : "rules-rule-action",
+  "/:id/:action": {
+    "script" : "reserved-program-action",
     "methods": ["put"],
     "types"  : ["json"]
   }

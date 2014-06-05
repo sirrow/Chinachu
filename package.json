@@ -1,12 +1,11 @@
 {
   "name": "chinachu",
-  "description": "A open source EPG digital video recorder system for Linux.",
-  "version": "0.0.1",
-  "private": true,
+  "description": "An open-source EPG digital video recorder system for Linux.",
+  "version": "1.0.0",
+  "private": false,
   "homepage": "http://chinachu.akkar.in/",
   "author": {
     "name": "Yuki KAN",
-    "email": "re@pixely.jp",
     "url": "https://github.com/kanreisa"
   },
   "repository": {
@@ -23,26 +22,27 @@
     "url": "https://github.com/kanreisa/Chinachu/issues"
   },
   "dependencies": {
-    "dateformat": "~1.0.6-1.2.3",
-    "easy-table": "~0.2.0",
-    "http-auth": "~1.2.9",
-    "opts": "~1.2.2",
-    "socket.io": "~0.9.16",
-    "xml2js": "~0.2.8",
-    "mkdirp": "~0.3.5",
-    "spdy": "~1.14.15",
-    "string": "~1.5.1",
-    "mtwitter": "~1.5.2",
-    "hoard": "~0.1.5",
-    "execsync": "0.0.5"
+    "dateformat": "^1.0.8-1.2.3",
+    "easy-table": "^0.2.0",
+    "http-auth": "^1.2.9",
+    "opts": "^1.2.2",
+    "socket.io": "^0.9.17",
+    "mkdirp": "^0.3.5",
+    "spdy": "^1.14.15",
+    "string": "^1.5.1",
+    "execsync": "0.0.5",
+    "typescript-require": "^0.2.6"
   },
   "devDependencies": {
-    "mocha": "*",
-    "should": "*",
-    "sinon": "*"
+    "typescript": "^1.0.1",
+    "gulp": "^3.7.0",
+    "gulp-mocha": "^0.4.1",
+    "gulp-tsc": "^0.9.0"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "gulp",
+    "build": "gulp",
+    "watch": "gulp watch"
   },
   "engines": {
     "node": ">=0.10.13"

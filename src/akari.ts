@@ -1,16 +1,16 @@
-/*!
- *  Chinachu Common Module (node-chinachu-common)
- *
- *  Copyright (c) 2012 Yuki KAN and Chinachu Project Contributors
- *  http://chinachu.akkar.in/
-**/
-/*jslint node:true, nomen:true, plusplus:true, regexp:true, vars:true, continue:true */
+// # Chinachu Common Module (chinachu-akari)
+
+/// <reference path="ref/node.d.ts"/>
 'use strict';
 
 var fs         = require('fs');
 var crypto     = require('crypto');
 var dateFormat = require('dateformat');
 var execSync   = require('execsync');
+
+exports.log = (message: string) => {
+    util.puts(message);
+};
 
 exports.jsonWatcher = function (filepath, callback, option) {
 	if (typeof option === 'undefined') { option = {}; }

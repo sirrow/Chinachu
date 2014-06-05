@@ -1,84 +1,43 @@
-/*!
- *  Chinachu Task Operator Service (chinachu-operator)
- *
- *  Copyright (c) 2012 Yuki KAN and Chinachu Project Contributors
- *  http://chinachu.akkar.in/
-**/
-/*jslint node:true, nomen: true, plusplus: true, regexp: true */
-/*global gc */
+// # Chinachu Operator Service (chinachu-operator)
+
+/// <reference path="ref/node.d.ts"/>
 'use strict';
 
-var CONFIG_FILE         = __dirname + '/config.json';
-var RESERVES_DATA_FILE  = __dirname + '/data/reserves.json';
-var RECORDING_DATA_FILE = __dirname + '/data/recording.json';
-var RECORDED_DATA_FILE  = __dirname + '/data/recorded.json';
+var CONFIG_PATH = process.env.CHINACHU_CONFIG_PATH || 'config.json';
+var DATA_DIR    = process.env.CHINACHU_DATA_DIR    || 'data/';
 
-// 標準モジュールのロード
+var RESERVES_DATA_PATH = DATA_DIR + 'reserves.json';
+var RECORDS_DATA_PATH  = DATA_DIR + 'records.json';
+
 var path          = require('path');
 var fs            = require('fs');
 var util          = require('util');
 var child_process = require('child_process');
+var dateFormat    = require('dateformat');
+var mkdirp        = require('mkdirp');
+var akari         = require('akari');
 
-// ディレクトリチェック
-if (!fs.existsSync('./data/') || !fs.existsSync('./log/') || !fs.existsSync('./web/')) {
-	util.error('必要なディレクトリが存在しないか、カレントワーキングディレクトリが不正です。');
-	process.exit(1);
+if (!fs.existsSync(CONFIG_PATH) || !fs.existsSync(RESERVES_DATA_PATH) || !fs.existsSync(RECORDS_DATA_PATH)) {
+    util.error('Fatal: Required directory does not exist or current working directory is invalid.');
+    process.exit(1);
 }
 
-// 終了処理
-process.on('SIGQUIT', function () {
-	setTimeout(function () {
-		process.exit(0);
-	}, 0);
+// A last resort
+process.on('uncaughtException', (err) => {
+    util.error('uncaughtException: ' + err.stack);
 });
 
-// 例外処理
-process.on('uncaughtException', function (err) {
-	util.error('uncaughtException: ' + err.stack);
-});
+try {
+    var config = require(CONFIG_PATH);
+} catch (e) {
+    util.error('Config Error: ' + e);
+    process.exit(1);
+}
 
-// 追加モジュールのロード
-var dateFormat = require('dateformat');
-var mkdirp     = require('mkdirp');
-var Mtwitter   = require('mtwitter');
-var chinachu   = require('chinachu-common');
-
-//
 var reserves  = [];
-var recorded  = [];
+var records   = [];
 var recording = [];
 
-// 設定の読み込み
-var config = require(CONFIG_FILE);
-
-// 録画中リストをクリア
-fs.writeFileSync(RECORDING_DATA_FILE, '[]');
-
-// Tweeter (Experimental)
-if (config.operTweeter && config.operTweeterAuth && config.operTweeterFormat) {
-	var tweeter = new Mtwitter({
-		consumer_key       : config.operTweeterAuth.consumerKey,
-		consumer_secret    : config.operTweeterAuth.consumerSecret,
-		access_token_key   : config.operTweeterAuth.accessToken,
-		access_token_secret: config.operTweeterAuth.accessTokenSecret
-	});
-	
-	var tweeterUpdater = function (status) {
-		tweeter.post(
-			'/statuses/update',
-			{ status: status },
-			function _onUpdatedTweeter(err, item) {
-				if (err) {
-					util.log('[Tweeter] Error: ' + JSON.stringify(err));
-				} else {
-					util.log('[Tweeter] Updated: ' + status);
-				}
-			}
-		);
-	};
-}
-
-//
 var schedulerProcessTime    = config.operSchedulerProcessTime    || 1000 * 60 * 20;//20分
 var schedulerIntervalTime   = config.operSchedulerIntervalTime   || 1000 * 60 * 60;//60分
 var schedulerSleepStartHour = config.operSchedulerSleepStartHour || 1;
@@ -368,17 +327,6 @@ function doRecord(program) {
 		process.on('SIGINT', finalize);
 		process.on('SIGQUIT', finalize);
 		process.on('SIGTERM', finalize);
-		
-		// Tweeter (Experimental)
-		if (tweeter && config.operTweeterFormat.start) {
-			tweeterUpdater(
-				config.operTweeterFormat.start
-					.replace('<id>', program.id)
-					.replace('<type>', program.channel.type)
-					.replace('<channel>', ((program.channel.type === 'CS') ? program.channel.sid : program.channel.channel))
-					.replace('<title>',   program.title)
-			);
-		}
 	}, 0, 'RECWAIT: ' + tuner.name);
 }
 
@@ -401,17 +349,6 @@ function prepRecord(program) {
 	
 	if (scheduler !== null) {
 		stopScheduler();
-	}
-	
-	// Tweeter (Experimental)
-	if ((timeout !== 0) && tweeter && config.operTweeterFormat.prepare) {
-		tweeterUpdater(
-			config.operTweeterFormat.prepare
-				.replace('<id>', program.id)
-				.replace('<type>', program.channel.type)
-				.replace('<channel>', ((program.channel.type === 'CS') ? program.channel.sid : program.channel.channel))
-				.replace('<title>',   program.title)
-		);
 	}
 }
 
@@ -519,10 +456,3 @@ function main() {
 	}
 }
 setInterval(main, 1000);
-
-//
-// gc
-//
-if (typeof gc !== 'undefined') {
-	setInterval(gc, 1000 * 60 * 2);
-}

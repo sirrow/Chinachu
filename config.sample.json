@@ -1,54 +1,122 @@
 {
   "recordedDir" : "./recorded/",
-  "temporaryDir": "/tmp/",
+  "recordedPath": "<type>/[<date:yymmdd-HHMM>][<type><channel>][<tuner>]<title>.m2ts",
   
-  "wuiUsers": [
-    "akari:bakuhatsu"
+  "server": {
+    "main": {
+      "isEnabled": true,
+      "port": 10772,
+      "host": "::",
+
+      "users": [
+        {
+          "name"    : "akari",
+          "password": "bakuhatsu"
+        },
+        {
+          "name"    : "kyoko",
+          "password": "shuyaku",
+          "group"   : "guest"
+        }
+      ],
+
+      "groups": [
+        {
+          "name": "guest",
+          "rules": [
+            {
+              "regexp" : "^config",
+              "methods": ["*"],
+              "isDeny" : true
+            },
+            {
+              "regexp" : ".*",
+              "methods": ["GET"]
+            }
+          ]
+        }
+      ],
+
+      "tls": {
+        "keyPath": "",
+        "keyData": "",
+        "certPath": "",
+        "certData": "",
+        "caPath": "",
+        "caData": "",
+        "requestCert": true,
+        "rejectUnauthorized": true
+      }
+    },
+    "open": {
+      "isEnabled": false,
+      "port": 20772
+    }
+  },
+
+  "operator": {
+    "port": 30772,
+
+    "tunerControl": {
+      "failoverIsEnabled": true,
+      "failoverThreshold": 5000
+    },
+
+    "recordControl": {
+      "offsetStart": -3000,
+      "offsetEnd"  : -5000
+    }
+  },
+  
+  "plugins": [
+    "dlna",
+    "tweet"
   ],
   
-  "wuiPort"        : 10772,
-  "wuiHost"        : "::",
-  "wuiTlsKeyPath"  : null,
-  "wuiTlsCertPath" : null,
-  "wuiOpenServer"  : false,
-  "wuiOpenPort"    : 20772,
-  "wuiPreviewer"   : true,
-  "wuiStreamer"    : true,
-  "wuiFiler"       : true,
-  "wuiConfigurator": true,
-  
-  "recordedFormat": "[<date:yymmdd-HHMM>][<type><channel>][<tuner>]<title>.m2ts",
+  "tunerGroup": {
+    "pt3-01": {
+      "controlWait": 500
+    },
+    "legacy-01": {
+      "controlWait": 5000
+    }
+  },
   
   "tuners": [
     {
       "name"        : "PT3-S1",
       "isScrambling": false,
-      "types"       : [ "BS", "CS" ],
-      "command"     : "recpt1 --device /dev/pt3video0 --b25 --strip --sid <sid> <channel> - -"
+      "types"       : ["BS", "CS"],
+      "command"     : "recpt1 --device /dev/pt3video0 --b25 <channel> - -",
+      "group"       : "pt3-01"
     },
     {
       "name"        : "PT3-S2",
       "isScrambling": false,
-      "types"       : [ "BS", "CS" ],
-      "command"     : "recpt1 --device /dev/pt3video1 --b25 --strip --sid <sid> <channel> - -"
+      "types"       : ["BS", "CS"],
+      "command"     : "recpt1 --device /dev/pt3video1 --b25 <channel> - -",
+      "group"       : "pt3-01"
     },
     {
       "name"        : "PT3-T1",
       "isScrambling": false,
-      "types"       : [ "GR" ],
-      "command"     : "recpt1 --device /dev/pt3video2 --b25 --strip --sid <sid> <channel> - -"
+      "types"       : ["GR"],
+      "command"     : "recpt1 --device /dev/pt3video2 --b25 <channel> - -",
+      "group"       : "pt3-01"
     },
     {
       "name"        : "PT3-T2",
       "isScrambling": false,
-      "types"       : [ "GR" ],
-      "command"     : "recpt1 --device /dev/pt3video3 --b25 --strip --sid <sid> <channel> - -"
+      "types"       : ["GR"],
+      "command"     : "recpt1 --device /dev/pt3video3 --b25 <channel> - -",
+      "group"       : "pt3-01"
     },
     {
       "name"        : "FSUSB2",
       "isScrambling": false,
-      "types"       : [ "GR" ],
-      "command"     : "recfsusb2n -b <channel> - -"
+      "types"       : ["GR"],
+      "command"     : "recfsusb2n -b <channel> - -",
+      "group"       : "legacy-01"
     }
   ],
   

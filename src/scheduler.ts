@@ -1,40 +1,37 @@
-/*!
- *  Chinachu Task Scheduler (chinachu-scheduler)
- *
- *  Copyright (c) 2012 Yuki KAN and Chinachu Project Contributors
- *  http://chinachu.akkar.in/
-**/
-/*jslint node:true, nomen:true, plusplus:true, regexp:true, vars:true, continue:true */
-/*global gc */
+// # Chinachu Scheduler (chinachu-scheduler)
+
+/// <reference path="ref/node.d.ts"/>
 'use strict';
 
-var PID_FILE = __dirname + '/data/scheduler.pid';
+var CONFIG_PATH = process.env.CHINACHU_CONFIG_PATH || 'config.json';
+var RULES_PATH  = process.env.CHINACHU_RULES_PATH  || 'rules.json';
+var DATA_DIR    = process.env.CHINACHU_DATA_DIR    || 'data/';
 
-var CONFIG_FILE         = __dirname + '/config.json';
-var RULES_FILE          = __dirname + '/rules.json';
-var RESERVES_DATA_FILE  = __dirname + '/data/reserves.json';
-var SCHEDULE_DATA_FILE  = __dirname + '/data/schedule.json';
+var RESERVES_DATA_PATH = DATA_DIR + 'reserves.json';
+var SCHEDULE_DATA_PATH = DATA_DIR + 'schedule.json';
+var SCHEDULER_PID_PATH = DATA_DIR + 'scheduler.pid';
 
-// 標準モジュールのロード
 var path          = require('path');
 var fs            = require('fs');
 var util          = require('util');
 var child_process = require('child_process');
+var opts          = require('opts');
+var dateFormat    = require('dateformat');
+var akari         = require('akari');
 
-// ディレクトリチェック
-if (!fs.existsSync('./data/') || !fs.existsSync('./log/') || !fs.existsSync('./web/')) {
-	util.error('必要なディレクトリが存在しないか、カレントワーキングディレクトリが不正です。');
-	process.exit(1);
+if (!fs.existsSync(CONFIG_PATH) || !fs.existsSync(RULES_PATH) || !fs.existsSync(DATA_DIR)) {
+    util.error('Fatal: Required directory does not exist or current working directory is invalid.');
+    process.exit(1);
 }
 
-// 追加モジュールのロード
-var opts       = require('opts');
-var xml2js     = require('xml2js');
-var xmlParser  = new xml2js.Parser();
-var dateFormat = require('dateformat');
-var chinachu   = require('chinachu-common');
+try {
+    var config = require(CONFIG_PATH);
+} catch (e) {
+    util.error('Config Error: ' + e);
+    process.exit(1);
+}
 
-// 引数
+// opts
 opts.parse([
 	{
 		short      : 'f',

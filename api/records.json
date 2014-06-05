@@ -1,6 +1,6 @@
 {
   "/": {
-    "script" : "recorded",
+    "script" : "records",
     "methods": ["get", "put"],
     "types"  : ["json"]
   },

@@ -1,11 +1,6 @@
-/*!
- *  Chinachu WebUI Server Service (chinachu-wui)
- *
- *  Copyright (c) 2012 Yuki KAN and Chinachu Project Contributors
- *  http://chinachu.akkar.in/
-**/
-/*jslint node:true, nomen:true, plusplus:true, regexp:true, vars:true, continue:true */
-/*global gc */
+// # Chinachu Server Service (chinachu-server)
+
+/// <reference path="ref/node.d.ts"/>
 'use strict';
 
 var CONFIG_FILE         = __dirname + '/config.json';
