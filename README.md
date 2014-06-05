@@ -5,4 +5,4 @@ Visit the Chinachu website for more information: <http://chinachu.akkar.in/>
 
 Introducing Chinachu Usushio
 ----------------------------
-Work in progress. This does **NOT** worki yet.
+Work in progress. This does **NOT** work yet.
