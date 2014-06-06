@@ -55,8 +55,6 @@
   },
 
   "operator": {
-    "port": 30772,
-
     "tunerControl": {
       "failoverIsEnabled": true,
       "failoverThreshold": 5000
@@ -66,6 +64,10 @@
       "offsetStart": -3000,
       "offsetEnd"  : -5000
     }
+  },
+
+  "scheduler": {
+    "workerProcesses": 4
   },
   
   "plugins": [

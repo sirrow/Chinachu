@@ -8,3 +8,4 @@
 /tmp/*
 /usr/*
 /node_modules/*
+/src/*.js

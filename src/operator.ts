@@ -9,13 +9,13 @@ var DATA_DIR    = process.env.CHINACHU_DATA_DIR    || 'data/';
 var RESERVES_DATA_PATH = DATA_DIR + 'reserves.json';
 var RECORDS_DATA_PATH  = DATA_DIR + 'records.json';
 
-var path          = require('path');
-var fs            = require('fs');
-var util          = require('util');
-var child_process = require('child_process');
-var dateFormat    = require('dateformat');
-var mkdirp        = require('mkdirp');
-var akari         = require('akari');
+import path          = require('path');
+import fs            = require('fs');
+import util          = require('util');
+import child_process = require('child_process');
+import akari         = require('akari');
+var dateFormat       = require('dateformat');
+var mkdirp           = require('mkdirp');
 
 if (!fs.existsSync(CONFIG_PATH) || !fs.existsSync(RESERVES_DATA_PATH) || !fs.existsSync(RECORDS_DATA_PATH)) {
     util.error('Fatal: Required directory does not exist or current working directory is invalid.');
@@ -24,7 +24,7 @@ if (!fs.existsSync(CONFIG_PATH) || !fs.existsSync(RESERVES_DATA_PATH) || !fs.exi
 
 // A last resort
 process.on('uncaughtException', (err) => {
-    util.error('uncaughtException: ' + err.stack);
+    akari.log(akari.LOG_ERROR, 'uncaughtException: ' + err.stack);
 });
 
 try {

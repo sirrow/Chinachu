@@ -3,16 +3,199 @@
 /// <reference path="ref/node.d.ts"/>
 'use strict';
 
-var fs         = require('fs');
-var crypto     = require('crypto');
+var CONFIG_PATH = process.env.CHINACHU_CONFIG_PATH || 'config.json';
+var RULES_PATH  = process.env.CHINACHU_RULES_PATH  || 'rules.json';
+var DATA_DIR    = process.env.CHINACHU_DATA_DIR    || 'data/';
+
+var RESERVES_DATA_PATH = DATA_DIR + 'reserves.json';
+var RECORDS_DATA_PATH  = DATA_DIR + 'records.json';
+var SCHEDULE_DATA_PATH = DATA_DIR + 'schedule.json';
+
+import fs      = require('fs');
+import util    = require('util');
 var dateFormat = require('dateformat');
 var execSync   = require('execsync');
 
-exports.log = (message: string) => {
-    util.puts(message);
+export enum ECategory {
+    anime,
+    information,
+    news,
+    sports,
+    variety,
+    drama,
+    music,
+    cinema,
+    etc
+}
+
+export enum EChannelType {
+    GR,
+    BS,
+    CS,
+    EX
+}
+
+export enum EMediaContainer {
+    'MPEG-2 TS',
+    'MPEG-4',
+    WebM
+}
+
+export enum EVideoType {
+    'MPEG-4 AVC',
+    'MPEG-4 Part 2',
+    'MPEG-2',
+    VP9,
+    VP8
+}
+
+export enum EAudioType {
+    AAC,
+    Vorbis
+}
+
+export enum ERecordingOption {
+    '1seg',
+    'norec'
+}
+
+export enum EDay {
+    sun,
+    mon,
+    tue,
+    wed,
+    thu,
+    fri,
+    sat
+}
+
+export interface ILogLevel {
+    level: number;
+    label: string;
+    isStderr?: boolean;
+}
+
+export interface IChannel {
+    n: number;
+    id: string;
+    sid: string;
+    channel: string;
+    name: string;
+    type: EChannelType;
+}
+
+export interface ITuner {
+    n: number;
+    name: string;
+    types: EChannelType[];
+    command: string;
+    isScrambling: boolean;
+}
+
+export interface ITranscoder {
+    name: string;
+    // todo
+}
+
+export interface IProgram {
+    id: string;
+    start: number;
+    end: number;
+    seconds: number;
+    channel: IChannel;
+    category: ECategory;
+    flags: string;
+    episode: number;
+    title: string;
+    subTitle: string;
+    fullTitle: string;
+    detail: string;
+    priority?: number;
+    recorded?: string;
+    command?: string;
+    tuner?: ITuner;
+    rule?: IRule;
+    tasks?: IProgramTask[];
+    transcoder?: ITranscoder;
+    mediaInfo?: IMediaInfo;
+    recordingOptions?: ERecordingOption[];
+    isManualReserved?: boolean;
+    isConflict?: boolean;
+    source?: IProgram;
+}
+
+export interface IProgramTask {
+    // todo
+}
+
+export interface IMediaInfo {
+    start: number;
+    end: number;
+    seconds: number;
+    container: EMediaContainer;
+    videoType: EVideoType;
+    audioType: EAudioType;
+    // todo
+}
+
+export interface IRule {
+    id: string;
+    priority?: number;
+    name?: string;
+    types?: EChannelType[];
+    categories?: ECategory[];
+    channels?: string[];
+    ignore_channels?: string[];
+    reserve_flags?: string[];
+    ignore_flags?: string[];
+    hour?: {
+        start?: number;
+        end?: number;
+    };
+    duration?: {
+        min?: number;
+        max?: number;
+    };
+    days?: EDay[];
+    reserve_titles?: string[];
+    ignore_titles?: string[];
+    reserve_descriptions?: string[];
+    ignore_descriptions?: string[];
+    recordingOptions?: ERecordingOption[];
+}
+
+export var LOG_ERROR: ILogLevel = {
+    level: 0,
+    label: 'error',
+    isStderr: true
+};
+export var LOG_WARN: ILogLevel = {
+    level: 1,
+    label: 'warn',
+    isStderr: true
+};
+export var LOG_INFO: ILogLevel = {
+    level: 2,
+    label: 'info'
+};
+export var LOG_DEBUG: ILogLevel = {
+    level: 3,
+    label: 'debug'
 };
 
-exports.jsonWatcher = function (filepath, callback, option) {
+export function log(level: ILogLevel, message: string): void {
+
+    message = new Date().toISOString() + ' ' + level.label + ' - ' + message;
+
+    if (level.isStderr === true) {
+        process.stderr.write(message + '\n');
+    } else {
+        process.stdout.write(message + '\n');
+    }
+};
+
+export function jsonWatcher(filepath: string, callback: (error?: string, data?: any, message?: string) => void, option: any) {
+
 	if (typeof option === 'undefined') { option = {}; }
 	
 	option.wait = option.wait || 1000;
@@ -60,7 +243,8 @@ exports.jsonWatcher = function (filepath, callback, option) {
 	fs.watch(filepath, onUpdated);
 };
 
-exports.getProgramById = function (id, array) {
+export function getProgramById(id: string, array: any[]): IProgram {
+
 	if (!array || array.length === 0) {
 		return null;
 	}
