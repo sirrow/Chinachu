@@ -148,7 +148,7 @@ export interface IVideoSpec {
     fps?: number;
     par?: number;
     dar?: number;
-    preset?: number;
+    preset?: string;
     crf?: number;
 }
 
