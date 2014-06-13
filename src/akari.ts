@@ -92,11 +92,6 @@ export interface ITuner {
     isScrambling: boolean;
 }
 
-export interface ITranscoder {
-    name: string;
-    // todo
-}
-
 export interface IProgram {
     id: string;
     start: number;
@@ -128,14 +123,40 @@ export interface IProgramTask {
     // todo
 }
 
+export interface ITranscoder {
+    name: string;
+    video?: IVideoSpec;
+    audio?: IAudioSpec;
+}
+
 export interface IMediaInfo {
-    start: number;
-    end: number;
-    seconds: number;
-    container: EMediaContainer;
-    videoType: EVideoType;
-    audioType: EAudioType;
-    // todo
+    start?: number;
+    end?: number;
+    seconds?: number;
+    size?: number;
+    bitrate?: number;
+    container?: EMediaContainer;
+    video?: IVideoSpec;
+    audios?: IAudioSpec[];
+}
+
+export interface IVideoSpec {
+    type?: EVideoType;
+    bitrate?: number;
+    width?: number;
+    height?: number;
+    fps?: number;
+    par?: number;
+    dar?: number;
+    preset?: number;
+    crf?: number;
+}
+
+export interface IAudioSpec {
+    type?: EAudioType;
+    bitrate?: number;
+    channel?: number;
+    frequency?: number;
 }
 
 export interface IRule {
