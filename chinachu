@@ -61,7 +61,7 @@ main () {
     reserve | unreserve | skip | unskip | stop | \
     rule | enrule | disrule | rmrule | \
     rules | reserves | recording | recorded | \
-    cleanup | unlock | ircbot | test )
+    cleanup | unlock | ircbot | addrec | test )
       cmd="chinachu_$cmd"
       ;;
     * )
@@ -865,6 +865,10 @@ chinachu_unlock () {
 
 chinachu_ircbot () {
   node app-cli.js -mode ircbot "$@" && return 0
+}
+
+chinachu_addrec () {
+  node app-cli.js -mode addrec "$@" && return 0
 }
 
 chinachu_test () {

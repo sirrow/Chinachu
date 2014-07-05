@@ -240,6 +240,13 @@ opts.parse([
 		description: 'nick',
 		value      : true,
 		required   : false
+	},
+	{
+		short      : 'file',
+		long       : 'file',
+		description: 'file',
+		value      : true,
+		required   : false
 	}
 ].reverse(), true);
 
@@ -330,6 +337,9 @@ switch (opts.get('mode')) {
 	// IRC bot
 	case 'ircbot':
 		chinachuIrcbot();
+		break;
+	case 'addrec':
+		addRecordedFile();
 		break;
 	default:
 		process.exit(1);
@@ -1122,3 +1132,61 @@ function isMatchedProgram(program) {
 	
 	return result;
 }
+
+
+// 録画済ファイル強制追加
+function addRecordedFile() {
+
+    var program=  {
+	"id": "dummy",
+	"channel": {
+	    "n": 1,
+	    "type": "dummy",
+	    "channel": "dummy",
+	    "name":"dummy",
+	    "id": "dummy",
+	    "sid": "dummy"
+	},
+	"category": "anime",
+	"title": "",
+	"subTitle": "",
+	"fullTitle": "",
+	"detail": "",
+	"episode": null,
+	"start": 946652400000,
+	"end": 946654200000,
+	"seconds": 1800,
+	"flags": [],
+	"isConflict": false,
+	"isSigTerm": true,
+	"tuner": {
+	    "name": "hdus",
+	    "isScrambling": false,
+	    "types": [
+		"GR"
+	    ],
+	    "command": "recfriio",
+	    "n": 1
+	},
+	"recorded": "",
+	"command": "recfriio"
+    };
+
+    var filepath = opts.get('file');
+    var filepathsplit = filepath.split("/");
+    var filename = filepathsplit[filepathsplit.length - 1];
+    var title = filename.replace(/\..+/ , "");
+    program.id = String(Math.floor( Math.random() * 10000000000 ));
+    program.title = title;
+    program.fullTitle = title;
+    program.recorded = filepath;
+    
+    recorded.push(program);
+
+    fs.writeFileSync(RECORDED_DATA_FILE, JSON.stringify(recorded));
+
+    return true;
+
+}
+
+
